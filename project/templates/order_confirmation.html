@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmation - Coffee Website</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+
+  .order-box {
+    border: 2px solid #dcae96;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 10px;
+    background-color: #fff8f3;
+  }
+
+  .order-box-title {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #6b3e26;
+  }
+
+  .order-summary p,
+  .order-item p {
+    margin: 4px 0;
+  }
+
+  .order-items {
+    margin-top: 15px;
+    border-top: 1px dashed #ccc;
+    padding-top: 10px;
+  }
+
+  .order-item {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #fef3eb;
+    border: 1px solid #f2d4be;
+    border-radius: 8px;
+  }
+
+  .order-total {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #3b2f2f;
+    margin-top: 15px;
+  }
+
+  .button {
+    display: inline-block;
+    margin: 10px 5px;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .order-now {
+    background-color: #ff8c42;
+    color: white;
+    border: 1px solid #ff7a1f;
+  }
+
+  .order-now:hover {
+    background-color: #ff721f;
+  }
+
+</style>
+
+</head>
+<body>
+  <header>
+    <nav class="navbar section-content">
+      <a href="{{ url_for('user_page') }}" class="nav-logo">
+        <h2 class="logo-text">☕ coffee.</h2>
+      </a>
+      <ul class="nav-menu">
+        <button id="menu-close-button" class="fas fa-times"></button>
+        <li class="nav-item"> 
+          <a href="{{ url_for('user_page') }}" class="nav-link">Home</a>
+        </li>
+        <li class="nav-item">
+          <a href="#about" class="nav-link">About</a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url_for('menu') }}" class="nav-link">Menu</a>
+        </li>
+        <li class="nav-item">
+          <a href="#testimonials" class="nav-link">Testimonials</a>
+        </li>
+        <li class="nav-item">
+          <a href="#gallery" class="nav-link">Gallery</a>
+        </li>
+        <li class="nav-item">
+          <a href="#contact" class="nav-link">Contact</a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+        </li>
+      </ul>
+      <button id="menu-open-button" class="fas fa-bars"></button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="contact-section">
+      <h2 class="section-title">Order Confirmation</h2>
+      <div class="section-content">
+        {% if flash_messages %}
+        {% for category, msg in get_flashed_messages(with_categories=True) %}
+        
+        {% endfor %}
+        {% endif %}
+        {% if order %}
+        <p style="color: green; text-align: center;"> Your order is placed !</p>
+        <div class="order-box">
+          <h3 class="order-box-title">Order Details</h3>
+          <div class="order-summary">
+            <p><strong>Order ID:</strong> {{ order.id }}</p>
+            <p><strong>Placed on:</strong> {{ order.created_at }}</p>
+            <p><strong>Status:</strong> {{ order.status }}</p>
+          </div>
+          <h4 class="order-box-subtitle">Items Ordered:</h4>
+          <div class="order-items">
+            {% if order['items'] %}
+            {% for item in order['items'] %}
+            <div class="order-item">
+              <p class="item-name">{{ item.name }}</p>
+              <p class="item-quantity">Quantity: {{ item.quantity }}</p>
+              <p class="item-price">Price: ₹{{ item.price }}</p>
+              <p class="item-total">Total: ₹{{ item.quantity * item.price }}</p>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p class="no-items">No items found in this order.</p>
+            {% endif %}
+          </div>
+          <div class="order-total">
+            <p><strong>Total Price:</strong> ₹{{ order.total_price }}</p>
+          </div>
+        </div>
+        {% else %}
+        <p style="color: red; text-align: center;">No order details available.</p>
+        {% endif %}
+        <a href="{{ url_for('menu') }}" class="button order-now">Order More</a>
+        <a href="{{ url_for('user_page') }}" class="button Contact-us">Back to Home</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer-section">
+    <div class="section-content">
+      <p class="copyright-text">2025 Coffee shop</p>
+      <div class="social-link-list">
+        <a href="#" class="social-link"><i class="fa-brands fa-facebook"></i></a>
+        <a href="#" class="social-link"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" class="social-link"><i class="fa-brands fa-x-twitter"></i></a>
+      </div>
+      <p class="policy-text">
+        <a href="#" class="policy-link">Privacy policy</a>
+        <span class="seprator">.</span>
+        <a href="#" class="policy-link">Refund policy</a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

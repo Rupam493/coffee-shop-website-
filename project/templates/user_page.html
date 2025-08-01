@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coffee Website</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    main {
+      flex: 1 0 auto;
+    }
+    .navbar, .hero-section, .about-section, .menu-section, .testimonials-section, .gallery-section, .contact-section, .footer-section {
+      text-align: center;
+    }
+    .section-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .hero-section {
+      padding: 60px 20px;
+      background: linear-gradient(to bottom, #f9e8d9, #ffffff);
+    }
+    .hero-details {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .title {
+      font-size: 36px;
+      color: #4a2c2a;
+      margin-bottom: 15px;
+    }
+    .subtitle {
+      font-size: 24px;
+      color: #6b4e31;
+      margin-bottom: 20px;
+    }
+    .description {
+      font-size: 18px;
+      color: #6b4e31;
+      margin-bottom: 25px;
+    }
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+    .button {
+      padding: 10px 25px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+    .button.order-now {
+      background-color: #6b4e31;
+      color: white;
+    }
+    .button.order-now:hover {
+      background-color: #4a2c2a;
+    }
+    .button.Contact-us {
+      background-color: #d4a373;
+      color: white;
+    }
+    .button.Contact-us:hover {
+      background-color: #b5895a;
+    }
+    .hero-image-wrapper {
+      margin-top: 20px;
+    }
+    .hero-image {
+      max-width: 100%;
+      height: auto;
+      max-height: 400px;
+    }
+    .about-section {
+      padding: 40px 20px;
+      background-color: #fff;
+    }
+    .about-details {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .section-title {
+      font-size: 28px;
+      color: #4a2c2a;
+      margin-bottom: 15px;
+    }
+    .text {
+      font-size: 16px;
+      color: #6b4e31;
+      margin-bottom: 20px;
+    }
+    .social-link-list {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+    .social-link {
+      color: #4a2c2a;
+      font-size: 18px;
+    }
+    .social-link:hover {
+      color: #d4a373;
+    }
+    .about-image-wrapper {
+      margin-bottom: 20px;
+    }
+    .about-image {
+      max-width: 100%;
+      height: auto;
+      max-height: 300px;
+    }
+    .menu-section {
+      padding: 40px 20px;
+      background-color: #f9e8d9;
+    }
+    .testimonials-section {
+      padding: 40px 20px;
+      background-color: #fff;
+    }
+    .slider-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .testimonial {
+      padding: 20px;
+      background-color: #f9e8d9;
+      border-radius: 8px;
+    }
+    .user-image {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin: 0 auto 10px;
+    }
+    .name {
+      font-size: 18px;
+      color: #4a2c2a;
+      margin-bottom: 10px;
+    }
+    .feedback {
+      font-size: 16px;
+      color: #6b4e31;
+      font-style: italic;
+    }
+    .swiper-button-prev, .swiper-button-next {
+      color: #6b4e31;
+    }
+    .swiper-pagination-bullet-active {
+      background-color: #6b4e31;
+    }
+    .gallery-section {
+      padding: 40px 20px;
+      background-color: #fff;
+    }
+    .gallery-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      list-style: none;
+      padding: 0;
+    }
+    .gallery-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+    .contact-section {
+      padding: 40px 20px;
+      background-color: #f9e8d9;
+    }
+    .contact-info-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 auto 20px;
+      max-width: 600px;
+    }
+    .contact-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 10px 0;
+      color: #6b4e31;
+    }
+    .contact-info i {
+      margin-right: 10px;
+      color: #4a2c2a;
+    }
+    .contact-form {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .form-input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #d4a373;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    .form-input textarea {
+      height: 100px;
+      resize: vertical;
+    }
+    .submit-button {
+      padding: 10px 25px;
+      background-color: #6b4e31;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .submit-button:hover {
+      background-color: #4a2c2a;
+    }
+    .footer-section {
+      flex-shrink: 0;
+      background-color: #f9e8d9;
+      padding: 20px 0;
+      border-top: 1px solid #d4a373;
+    }
+    .footer-section p {
+      margin: 5px 0;
+      color: #6b4e31;
+    }
+    .policy-link {
+      color: #4a2c2a;
+      text-decoration: none;
+    }
+    .policy-link:hover {
+      color: #d4a373;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="navbar section-content">
+      <a href="{{ url_for('index') }}" class="nav-logo">
+        <h2 class="logo-text">☕ coffee.</h2>
+      </a>
+      <ul class="nav-menu">
+        <button id="menu-close-button" class="fas fa-times"></button>
+        <li class="nav-item">
+          <a href="{{ url_for('index') }}" class="nav-link">Home</a>
+        </li>
+        <li class="nav-item">
+          <a href="#about" class="nav-link">About</a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url_for('menu') }}" class="nav-link">Menu</a>
+        </li>
+        <li class="nav-item">
+          <a href="#testimonials" class="nav-link">Testimonials</a>
+        </li>
+        <li class="nav-item">
+          <a href="#gallery" class="nav-link">Gallery</a>
+        </li>
+        <li class="nav-item">
+          <a href="#contact" class="nav-link">Contact</a>
+        </li>
+        {% if 'user_id' in session %}
+          <li class="nav-item">
+            <a href="{{ url_for('order_history') }}" class="nav-link">Order History</a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a href="{{ url_for('login') }}" class="nav-link">Login</a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('signup') }}" class="nav-link">Signup</a>
+          </li>
+        {% endif %}
+        <li class="nav-item">
+          <!-- <a href="{{ url_for('admin_login') }}" class="nav-link">Admin</a> -->
+        </li>
+      </ul>
+      <button id="menu-open-button" class="fas fa-bars"></button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero-section">
+      <div class="section-content">
+        <div class="hero-details">
+          {% if first_name %}
+            <h2 class="title">Welcome, {{ first_name }}!</h2>
+          {% else %}
+            <h2 class="title">Best Coffee</h2>
+          {% endif %}
+          <h3 class="subtitle">Make your day great with our special Coffee!</h3>
+          <p class="description">Welcome to our coffee paradise, where every bean tells a story and every cup sparks joy.</p>
+          <div class="buttons">
+            <a href="{{ url_for('menu') }}" class="button order-now">Order Now</a>
+            <a href="#contact" class="button Contact-us">Contact Us</a>
+          </div>
+        </div>
+        <div class="hero-image-wrapper">
+          <img src="{{ url_for('static', filename='images/coffee-hero-section.png') }}" alt="Hero" class="hero-image">
+        </div>
+      </div>
+    </section>
+
+    <section class="about-section" id="about">
+      <div class="section-content">
+        <div class="about-image-wrapper">
+          <img src="{{ url_for('static', filename='images/about-image.jpg') }}" alt="About" class="about-image">
+        </div>
+        <div class="about-details">
+          <h2 class="section-title">About Us</h2>
+          <p class="text">At Coffee House in Salt Lake, Kolkata, we pride ourselves on being a go-to destination for coffee lovers and conversation seekers alike. We're dedicated to providing an exceptional coffee experience in a cozy and inviting atmosphere, where guests can relax, unwind, and enjoy their time in comfort.</p>
+          <div class="social-link-list">
+            <a href="#" class="social-link"><i class="fa-brands fa-facebook"></i></a>
+            <a href="#" class="social-link"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" class="social-link"><i class="fa-brands fa-x-twitter"></i></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="menu-section" id="menu">
+      <h2 class="section-title">Our Menu</h2>
+      <div class="section-content">
+        <p class="text">Explore our delicious offerings and place your order online!</p>
+        <a href="{{ url_for('menu') }}" class="button order-now">View Menu & Order</a>
+      </div>
+    </section>
+
+         <section class="testimonials-section" id="testimonials">
+      <h2 class="section-title">Testimonials</h2>
+      <div class="section-content">
+        <div class="slider-container swiper">
+        <div class="slider-wrapper">
+          <ul class="testimonials-list swiper-wrapper">
+            <li class="testimonial swiper-slide">
+              <img src="{{ url_for('static', filename='images/user-1.jpg') }}" alt="User" class="user-image">
+              <h3 class="name">Shraddha Chowdhury</h3>
+              <i class="feedback">"Loved the French roast. Perfectly balanced and rich. Will order again!"</i>
+            </li>
+            
+                  <li class="testimonial swiper-slide">
+              <img src="{{ url_for('static', filename='images/user-2.jpg') }}" alt="User" class="user-image">
+              <h3 class="name">Aarav Roy</h3>
+              <i class="feedback">"Great espresso blend! Smooth and bold flavor. Fast shipping too!"</i>
+            </li>
+                  <li class="testimonial swiper-slide">
+              <img src="{{ url_for('static', filename='images/user-3.jpg') }}" alt="User" class="user-image">
+              <h3 class="name">Ishaan Gupta</h3>
+              <i class="feedback">"Fantastic mocha flavor. Fresh and aromatic. Quick shipping!"</i>
+            </li>
+                  <li class="testimonial swiper-slide">
+              <img src="{{ url_for('static', filename='images/user-4.jpg') }}" alt="User" class="user-image">
+              <h3 class="name">Aarshi Banerjee</h3>
+              <i class="feedback">"Excelent quality! Fresh beans and quick deloivery. Highly recommend"</i>
+            </li>
+                  <li class="testimonial swiper-slide">
+              <img src="{{ url_for('static', filename='images/user-5.jpg') }}" alt="User" class="user-image">
+              <h3 class="name">Anik Sen</h3>
+              <i class="feedback">"Best decaf I've tried! smooth and flavorful. Arrived promptly."</i>
+            </li>
+          </ul>
+
+            <div class="swiper-pagination"></div>
+            <div class="swiper-slide-button swiper-button-prev"></div>
+            <div class="swiper-slide-button swiper-button-next"></div>
+        </div>
+        </div>
+      </div>
+      </section>
+
+
+    <section class="gallery-section" id="gallery">
+      <h2 class="section-title">Gallery</h2>
+      <div class="section-content">
+        <ul class="gallery-list">
+          <li class="gallery-item">
+            <img src="{{ url_for('static', filename='images/gallery-1.jpg') }}" alt="Gallery" class="gallery-image">
+          </li>
+          <li class="gallery-item">
+            <img src="{{ url_for('static', filename='images/gallery-2.jpg') }}" alt="Gallery" class="gallery-image">
+          </li>
+          <li class="gallery-item">
+            <img src="{{ url_for('static', filename='images/gallery-3.jpg') }}" alt="Gallery" class="gallery-image">
+          </li>
+          <li class="gallery-item">
+            <img src="{{ url_for('static', filename='images/gallery-4.jpg') }}" alt="Gallery" class="gallery-image">
+          </li>
+          <li class="gallery-item">
+            <img src="{{ url_for('static', filename='images/gallery-5.jpg') }}" alt="Gallery" class="gallery-image">
+          </li>
+          <li class="gallery-item">
+            <img src="{{ url_for('static', filename='images/gallery-6.jpg') }}" alt="Gallery" class="gallery-image">
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="contact-section" id="contact">
+      <h2 class="section-title">Contact Us</h2>
+      <div class="section-content">
+        <ul class="contact-info-list">
+          <li class="contact-info">
+            <i class="fa-solid fa-location-crosshairs"></i>
+            <p>123 Camsite Avenue, Wilderness, CA 98765</p>
+          </li>
+          <li class="contact-info">
+            <i class="fa-solid fa-envelope"></i>
+            <p>info@coffewebsite.com</p>
+          </li>
+          <li class="contact-info">
+            <i class="fa-solid fa-phone"></i>
+            <p>(123) 456-78909</p>
+          </li>
+          <li class="contact-info">
+            <i class="fa-solid fa-clock"></i>
+            <p>Monday - Friday: 9:00 AM - 5:00 PM</p>
+          </li>
+          <li class="contact-info">
+            <i class="fa-solid fa-clock"></i>
+            <p>Sunday: Closed</p>
+          </li>
+          <li class="contact-info">
+            <i class="fa-solid fa-globe"></i>
+            <p>www.coffeewebsite.com</p>
+          </li>
+        </ul>
+        <form action="#" class="contact-form">
+          <input type="text" placeholder="Your name" class="form-input" required>
+          <input type="email" placeholder="Your email" class="form-input" required>
+          <textarea placeholder="Your message" class="form-input" required></textarea>
+          <button class="submit-button">Submit</button>
+        </form>
+      </div>
+    </section>
+
+    <footer class="footer-section">
+      <div class="section-content">
+        <p class="copyright-text">2025 Coffee Shop</p>
+        <div class="social-link-list">
+          <a href="#" class="social-link"><i class="fa-brands fa-facebook"></i></a>
+          <a href="#" class="social-link"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" class="social-link"><i class="fa-brands fa-x-twitter"></i></a>
+        </div>
+        <p class="policy-text">
+          <a href="#" class="policy-link">Privacy policy</a>
+          <span class="seprator">.</span>
+          <a href="#" class="policy-link">Refund policy</a>
+        </p>
+      </div>
+    </footer>
+  </main>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script>
+  const navLinks = document.querySelectorAll(".nav-menu .nav-link");
+const menuOpenButton = document.querySelector("#menu-open-button");
+const menuCloseButton = document.querySelector("#menu-close-button");
+
+menuOpenButton.addEventListener("click", () => {
+  document.body.classList.add("show-mobile-menu");
+});
+
+menuCloseButton.addEventListener("click", () => {
+  document.body.classList.remove("show-mobile-menu");
+});
+
+navLinks .forEach(link => {
+  link.addEventListener("click", () => menuOpenButton.click());
+});
+
+const swiper = new Swiper('.slider-wrapper', {
+  loop: true,
+  grabCursor: true,
+  spaceBetween: 25, 
+
+  // If we need pagination
+  pagination: {
+    el: '.swiper-pagination',
+    clickable: true,
+    dynamicBullets: true,
+  },
+
+  // Navigation arrows
+  navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+  },
+
+  breakpoints:{
+    0: {
+      slidesPerView: 1
+    },
+    768: {
+      slidesPerView: 2
+    },
+    1024: {
+      slidesPerView: 3
+    }
+  }
+});
+</script>
+
+</body>

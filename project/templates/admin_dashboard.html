@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Coffee Website</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .dashboard-container {
+      text-align: center;
+      padding: 50px 20px;
+    }
+    .dashboard-button {
+      display: inline-block;
+      padding: 15px 40px;
+      margin: 10px;
+      background-color: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .dashboard-button:hover {
+      background-color: #45a049;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-user_page: 1000;
+    }
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+      text-align: center;
+      color: #333;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #333;
+      font-weight: bold;
+    }
+    .close:hover {
+      color: #4CAF50;
+    }
+    .form-input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    .submit-button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+    }
+    .submit-button:hover {
+      background-color: #45a049;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+      color: #333;
+    }
+    .action-form {
+      margin: 5px;
+      display: inline-block;
+    }
+    .remove-button {
+      background-color: #ff4d4d;
+      color: white;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .remove-button:hover {
+      background-color: #cc0000;
+    }
+    .edit-button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-left: 5px;
+    }
+    .edit-button:hover {
+      background-color: #45a049;
+    }
+    .file-input-label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+      color: #333;
+    }
+    input[type="file"] {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+     Xn    border-radius: 4px;
+    }
+    .modal-content h3 {
+      margin: 0 0 20px;
+      font-size: 20px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="navbar section-content">
+      <a href="{{ url_for('user_page') }}" class="nav-logo">
+        <h2 class="logo-text">☕ coffee.</h2>
+      </a>
+      <ul class="nav-menu">
+        <button id="menu-close-button" class="fas fa-times"></button>
+        <li class="nav-item">
+          <a href="{{ url_for('admin_dashboard') }}" class="nav-link">Admin Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url_for('admin_logout') }}" class="nav-link">Logout</a>
+        </li>
+      </ul>
+      <button id="menu-open-button" class="fas fa-bars"></button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="dashboard-container">
+      <h2 class="section-title">Admin Dashboard</h2>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, msg in messages %}
+            
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <div>
+        <button class="dashboard-button" onclick="openModal('addItemModal')">Add New Item</button>
+        <button class="dashboard-button" onclick="openModal('removeItemModal')">Manage Items</button>
+        <button class="dashboard-button" onclick="openModal('manageOrdersModal')">Handle Orders</button>
+      </div>
+    </section>
+
+    <!-- Add New Item Modal -->
+    <div id="addItemModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal('addItemModal')">×</span>
+        <h3>Add New Menu Item</h3>
+        <form action="{{ url_for('admin_dashboard') }}" method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="action" value="add_item">
+          <input type="text" name="name" placeholder="Item Name" class="form-input" required>
+          <textarea name="description" placeholder="Description" class="form-input" required></textarea>
+          <input type="number" name="price" step="0.01" min="0" placeholder="Price" class="form-input" required>
+          <input type="text" name="category" placeholder="Category (e.g., Hot Beverages)" class="form-input" required>
+          <label for="image" class="file-input-label">Select Image</label>
+          <input type="file" name="image" id="image" accept="image/*" class="form-input" required>
+          <button type="submit" class="submit-button">Add Item</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Manage Menu Items Modal -->
+    <div id="removeItemModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal('removeItemModal')">×</span>
+        <h3>Manage Menu Items</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Image</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in menu_items %}
+            <tr>
+              <td>{{ item.id }}</td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.category }}</td>
+              <td>₹{{ item.price }}</td>
+              <td><img src="{{ url_for('static', filename=item.image) }}" alt="{{ item.name }}" style="max-width: 50px; height: auto;"></td>
+              <td>
+                <form action="{{ url_for('admin_dashboard') }}" method="POST" class="action-form">
+                  <input type="hidden" name="action" value="remove_item">
+                  <input type="hidden" name="item_id" value="{{ item.id }}">
+                  <button type="submit" class="remove-button">Remove</button>
+                </form>
+                <button class="edit-button" onclick="openEditModal({{ item.id }}, '{{ item.name }}', '{{ item.description }}', {{ item.price }}, '{{ item.category }}', '{{ item.image }}')">Edit</button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Edit Item Modal -->
+    <div id="editItemModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal('editItemModal')">×</span>
+        <h3>Edit Menu Item</h3>
+        <form id="editItemForm" action="{{ url_for('admin_dashboard') }}" method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="action" value="edit_item">
+          <input type="hidden" name="item_id" id="edit_item_id">
+          <input type="text" name="name" id="edit_name" placeholder="Item Name" class="form-input" required>
+          <textarea name="description" id="edit_description" placeholder="Description" class="form-input" required></textarea>
+          <input type="number" name="price" id="edit_price" step="0.01" min="0" placeholder="Price" class="form-input" required>
+          <input type="text" name="category" id="edit_category" placeholder="Category" class="form-input" required>
+          <label for="edit_image" class="file-input-label">Select New Image (optional)</label>
+          <input type="file" name="image" id="edit_image" accept="image/*" class="form-input">
+          <button type="submit" class="submit-button">Save Changes</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Handle Orders Modal -->
+    <div id="manageOrdersModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal('manageOrdersModal')">×</span>
+        <h3>Handle Orders</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Username</th>
+              <th>Items</th>
+              <th>Total Price</th>
+              <th>Status</th>
+              <th>Created At</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in orders %}
+            <tr>
+              <td>{{ order.id }}</td>
+              <td>{{ order.username }}</td>
+              <td>
+                <ul>
+                  {% for item in order['items'] %}
+                  <li>{{ item.name }} x {{ item.quantity }} @ ₹{{ item.price }}</li>
+                  {% endfor %}
+                </ul>
+              </td>
+              <td>₹{{ order.total_price }}</td>
+              <td>{{ order.status }}</td>
+              <td>{{ order.created_at }}</td>
+              <td>
+                <form action="{{ url_for('admin_dashboard') }}" method="POST" class="action-form">
+                  <input type="hidden" name="action" value="update_order_status">
+                  <input type="hidden" name="order_id" value="{{ order.id }}">
+                  <select name="status" class="form-input">
+                    <option value="Pending" {{ 'selected' if order.status == 'Pending' }}>Pending</option>
+                    <option value="Preparing" {{ 'selected' if order.status == 'Preparing' }}>Preparing</option>
+                    <option value="Ready" {{ 'selected' if order.status == 'Ready' }}>Ready</option>
+                    <option value="Delivered" {{ 'selected' if order.status == 'Delivered' }}>Delivered</option>
+                  </select>
+                  <button type="submit" class="submit-button">Update</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer-section">
+    <div class="section-content">
+      <p class="copyright-text">2025 Coffee shop</p>
+      <div class="social-link-list">
+        <a href="#" class="social-link"><i class="fa-brands fa-facebook"></i></a>
+        <a href="#" class="social-link"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" class="social-link"><i class="fa-brands fa-x-twitter"></i></a>
+      </div>
+      <p class="policy-text">
+        <a href="#" class="policy-link">Privacy policy</a>
+        <span class="seprator">.</span>
+        <a href="#" class="policy-link">Refund policy</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      modal.style.display = 'flex';
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      modal.style.display = 'none';
+    }
+
+    function openEditModal(id, name, description, price, category, image) {
+      document.getElementById('edit_item_id').value = id;
+      document.getElementById('edit_name').value = name;
+      document.getElementById('edit_description').value = description;
+      document.getElementById('edit_price').value = price;
+      document.getElementById('edit_category').value = category;
+      openModal('editItemModal');
+    }
+
+    window.onclick = function(event) {
+      const modals = document.getElementsByClassName('modal');
+      for (let modal of modals) {
+        if (event.target == modal) {
+          modal.style.display = 'none';
+        }
+      }
+    }
+  </script>
+</body>
+</html>

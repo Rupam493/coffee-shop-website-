@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu - Coffee Website</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+  .button-container {
+    display: flex;
+    justify-content: center;  /* Horizontal center */
+    align-items: center;      /* Vertical center */
+    height: 30vh;            /* Full viewport height */
+  }
+
+  .submit-button {
+    background-color: green;
+    color: white;
+    padding: 10px 20px;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .submit-button:hover {
+    background-color: darkgreen;
+  }
+
+  .quantity-container {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+    justify-content: center; /* Center quantity input and label */
+  }
+
+  .quantity-container label {
+    margin-right: 8px;
+    font-weight: bold;
+    color: #333; /* Ensure label is visible */
+  }
+
+  .quantity-input {
+    width: 60px;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    text-align: center;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .quantity-input:focus {
+    border-color: #4CAF50; /* Green border on focus */
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+    outline: none;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-user_page: 1000;
+  }
+
+  .modal-content {
+    background: #ffffff; /* White background for contrast */
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    text-align: center;
+    color: #333; /* Dark text for visibility */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add shadow for depth */
+    border: 1px solid #ccc; /* Debugging: visible border */
+  }
+
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+    font-weight: bold;
+  }
+
+  .close:hover {
+    color: #4CAF50; /* Green on hover */
+  }
+
+  .payment-option {
+    margin: 15px 0;
+    font-size: 16px;
+    color: #333; /* Ensure text is visible */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .payment-option input {
+    margin-right: 8px;
+  }
+
+  .payment-option label {
+    font-weight: normal;
+    color: #333;
+  }
+
+  .modal-content h3 {
+    margin: 0 0 20px;
+    font-size: 20px;
+    color: #333;
+  }
+
+  .menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 0;
+  list-style: none;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background-color: #fff8f3;
+  border: 1px solid #dcae96;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+.menu-item:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.menu-image {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.menu-details {
+  flex-grow: 1;
+}
+
+.menu-details h4 {
+  font-size: 20px;
+  margin: 0;
+  color: #6b3e26;
+}
+
+.menu-details p {
+  margin: 6px 0;
+  font-size: 15px;
+  color: #333;
+}
+
+.quantity-container {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.quantity-input {
+  margin-left: 10px;
+  width: 60px;
+  padding: 6px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+.quantity-input:focus {
+  border-color: #4CAF50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+  outline: none;
+}
+
+</style>
+</head>
+<body>
+  <header>
+    <nav class="navbar section-content">
+      <a href="{{ url_for('user_page') }}" class="nav-logo">
+        <h2 class="logo-text">☕ coffee.</h2>
+      </a>
+      <ul class="nav-menu">
+        <button id="menu-close-button" class="fas fa-times"></button>
+        <li class="nav-item"> 
+          <a href="{{ url_for('user_page') }}" class="nav-link">Home</a>
+        </li>
+        <li class="nav-item">
+          <a href="#about" class="nav-link">About</a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url_for('menu') }}" class="nav-link">Menu</a>
+        </li>
+        <li class="nav-item">
+          <a href="#testimonials" class="nav-link">Testimonials</a>
+        </li>
+        <li class="nav-item">
+          <a href="#gallery" class="nav-link">Gallery</a>
+        </li>
+        <li class="nav-item">
+          <a href="#contact" class="nav-link">Contact</a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+        </li>
+      </ul>
+      <button id="menu-open-button" class="fas fa-bars"></button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="menu-section">
+      <h2 class="section-title">Our Menu</h2>
+      <div class="section-content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, msg in messages %}
+             
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        <form action="{{ url_for('menu') }}" method="POST" class="contact-form" style="text-align: center; padding-top: 20px;" >
+          <input type="hidden" name="payment_method" id="payment_method">
+          {% for category in items_by_category %}
+          <h3 class="name">{{ category }}</h3>
+          <ul class="menu-list">
+            {% for item in items_by_category[category] %}
+            <li class="menu-item">
+              <img src="{{ url_for('static', filename=item[5]) }}" alt="{{ item[1] }}" class="menu-image">
+              <div class="menu-details">
+                <h4>{{ item[1] }}</h4>
+                <p>{{ item[2] }}</p>
+                <p><strong>Price:</strong> ₹{{ item[3] }}</p>
+                <div class="quantity-container">
+                  <label for="quantity_{{ item[0] }}">Quantity:</label>
+                  <input type="number" id="quantity_{{ item[0] }}" name="quantity_{{ item[0] }}" min="0" value="0" class="quantity-input">
+                </div>
+              </div>
+            </li>
+
+            {% endfor %}
+          </ul>
+          {% endfor %}
+          <div class="button-container">
+            <button type="button" class="submit-button" onclick="openModal('paymentModal')">Place Order</button>
+          </div>
+          <!-- Payment Method Modal -->
+          <div id="paymentModal" class="modal">
+            <div class="modal-content">
+              <span class="close" onclick="closeModal('paymentModal')">×</span>
+              <h3>Select Payment Method</h3>
+              <div class="payment-option">
+                <input type="radio" id="cod" name="payment_option" value="COD">
+                <label for="cod">Cash on Delivery</label>
+              </div>
+              
+              <button class="submit-button" onclick="confirmOrder()">Confirm Order</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer-section">
+    <div class="section-content">
+      <p class="copyright-text">2025 Coffee shop</p>
+      <div class="social-link-list">
+        <a href="#" class="social-link"><i class="fa-brands fa-facebook"></i></a>
+        <a href="#" class="social-link"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" class="social-link"><i class="fa-brands fa-x-twitter"></i></a>
+      </div>
+      <p class="policy-text">
+        <a href="#" class="policy-link">Privacy policy</a>
+        <span class="seprator">.</span>
+        <a href="#" class="policy-link">Refund policy</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    function openModal(modalId) {
+      document.getElementById(modalId).style.display = 'flex';
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    function confirmOrder() {
+      const paymentMethod = document.querySelector('input[name="payment_option"]:checked');
+      if (paymentMethod) {
+        document.getElementById('payment_method').value = paymentMethod.value;
+        document.querySelector('form').submit();
+      } else {
+        alert('Please select a payment method.');
+      }
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById('paymentModal');
+      if (event.target == modal) {
+        modal.style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>

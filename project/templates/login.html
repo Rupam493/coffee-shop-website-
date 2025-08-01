@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Coffee Website</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <nav class="navbar section-content">
+      <a href="{{ url_for('user_page') }}" class="nav-logo">
+        <h2 class="logo-text">☕ coffee.</h2>
+      </a>
+      <ul class="nav-menu">
+        <button id="menu-close-button" class="fas fa-times"></button>
+        <li class="nav-item"> 
+          <a href="{{ url_for('user_page') }}" class="nav-link">Home</a>
+        </li>
+        <li class="nav-item">
+          <a href="#about" class="nav-link">About</a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url_for('menu') }}" class="nav-link">Menu</a>
+        </li>
+        <li class="nav-item">
+          <a href="#testimonials" class="nav-link">Testimonials</a>
+        </li>
+        <li class="nav-item">
+          <a href="#gallery" class="nav-link">Gallery</a>
+        </li>
+        <li class="nav-item">
+          <a href="#contact" class="nav-link">Contact</a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url_for('signup') }}" class="nav-link">Sign Up</a>
+        </li>
+      </ul>
+      <button id="menu-open-button" class="fas fa-bars"></button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="contact-section">
+      <h2 class="section-title">Login</h2>
+      <div class="section-content">
+        {% if error %}
+        <p style="color: red; text-align: center;">{{ error }}</p>
+        {% endif %}
+        <form action="{{ url_for('login') }}" method="POST" class="contact-form">
+          <input type="text" name="username" placeholder="Username" class="form-input" required>
+          <input type="password" name="password" placeholder="Password" class="form-input" required>
+          <button type="submit" class="submit-button">Login</button>
+        </form>
+        <p class="text">Don't have an account? <a href="{{ url_for('signup') }}" class="policy-link">Sign Up</a></p>
+        <!-- <a href="{{ url_for('admin_login') }}" class="button admin-login">Admin Login</a> -->
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer-section">
+    <div class="section-content">
+      <p class="copyright-text">2025 Coffee shop</p>
+      <div class="social-link-list">
+        <a href="#" class="social-link"><i class="fa-brands fa-facebook"></i></a>
+        <a href="#" class="social-link"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" class="social-link"><i class="fa-brands fa-x-twitter"></i></a>
+      </div>
+      <p class="policy-text">
+        <a href="#" class="policy-link">Privacy policy</a>
+        <span class="seprator">.</span>
+        <a href="#" class="policy-link">Refund policy</a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
